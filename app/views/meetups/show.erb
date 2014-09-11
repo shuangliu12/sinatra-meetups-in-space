@@ -1,3 +1,16 @@
 <h1><%= @meetup.name%></h1>
 <p><%= @meetup.location%></p>
 <p><%= @meetup.description%></p>
+
+<hr \>
+
+
+<%if authenticate! %>
+  <button style = "color:black">Join</button>
+<% end %>
+
+
+
+
+
+

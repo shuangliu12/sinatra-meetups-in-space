@@ -54,8 +54,23 @@ get '/example_protected_page' do
   authenticate!
 end
 
-get '/meetups/:id' do
-  @meetup = Meetup.find(params[:id])
+get '/meetups' do
+  @meetups = Meetup.order('name')
+  erb :index
+end
 
+get '/meetups/add'do
+    erb :'meetups/add'
+end
+
+get '/meetups/:id' do
+  id = params[:id]
+  @meetup = Meetup.find(id)
   erb :'meetups/show'
+end
+
+post '/meetups/add' do
+  if User.signed_in?
+    Meetup.create(name: params["name"], description: params["description"], location: params["location"])
+  end
 end
