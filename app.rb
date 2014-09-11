@@ -59,18 +59,41 @@ get '/meetups' do
   erb :index
 end
 
-get '/meetups/add'do
-    erb :'meetups/add'
+get '/meetups/new'do
+  authenticate!
+  erb :'meetups/new'
 end
 
 get '/meetups/:id' do
-  id = params[:id]
-  @meetup = Meetup.find(id)
+  @meetup = Meetup.find(params[:id])
   erb :'meetups/show'
 end
 
-post '/meetups/add' do
-  if User.signed_in?
-    Meetup.create(name: params["name"], description: params["description"], location: params["location"])
+post '/meetups' do
+  authenticate!
+
+  @meetup  = Meetup.new(params[:meetup])
+  if @meetup.save
+    flash[:notice] = "You have successfully created a meetup group."
+    redirect "/meetups/#{@meetup.id}"
+  else
+     flash[:notice] = "Something is wrong."
+    render :'meetups/new'
   end
 end
+
+post '/meetups/:meetup_id/memberships' do
+authenticate!
+  meetup = Meetup.find(params[:meetup_id])
+  @membership = Membership.new(user_id: current_user.id, meetup_id: meetup.id)
+
+  if @membership.save
+    flash[:notice] = "You have successfully joined this group."
+    redirect "/meetups/#{meetup.id}"
+  else
+    flash[:notice] = "There was an error."
+    redirect "/meetups/#{meetup.id}"
+  end
+
+end
+

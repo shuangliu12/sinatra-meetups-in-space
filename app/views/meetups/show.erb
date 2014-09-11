@@ -4,11 +4,11 @@
 
 <hr \>
 
-
-<%if authenticate! %>
-  <button style = "color:black">Join</button>
-<% end %>
-
+<% if signed_in? && !current_user.meetups.include?(@meetup) %>
+  <form name="form" action='/meetups/<%= @meetup.id%>/memberships' method = "post">
+    <button type="submit" style = "color:black">Join</button>
+  </form>
+<%end%>
 
 
 
